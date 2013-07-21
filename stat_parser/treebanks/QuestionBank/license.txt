@@ -1,0 +1,7 @@
+=== QuestionBank ===
+Copyright (C) John Judge
+National Centre for Language Technology and School of Computing
+
+QuestionBank is provided free for research purposes as long as an appropriate
+reference to the above mentioned publication is included in any published work
+arising out of the use of QuestionBank.

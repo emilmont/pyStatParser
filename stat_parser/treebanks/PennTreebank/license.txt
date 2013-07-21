@@ -1,0 +1,10 @@
+PENN TREEBANK SAMPLE
+http://www.cis.upenn.edu/~treebank/home.html
+
+This is a ~5% fragment of Penn Treebank, (C) LDC 1995.  It is made
+available under fair use for the purposes of illustrating NLTK tools
+for tokenizing, tagging, chunking and parsing.  This data is for
+non-commercial use only.
+
+Contents: parsed data from Wall Street Journal for 1650 sentences
+(99 treebank files wsj_0001 .. wsj_0099)
