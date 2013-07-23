@@ -1,5 +1,4 @@
 from stat_parser.parser import Parser
-from json import dumps
 
 
 if __name__ == '__main__':

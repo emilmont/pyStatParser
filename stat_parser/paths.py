@@ -13,4 +13,8 @@ PENNTREEBANK_DIR = join(TREEBANKS_DIR, "PennTreebank")
 PENNTREEBANK_GLOB = join(PENNTREEBANK_DIR, "*.mrg")
 PENNTREEBANK_NORM = join(TEMP_DIR, "penn_treebank.json")
 
+MODEL_TREEBANK = join(TEMP_DIR, 'model_treebank.json')
 MODEL = join(TEMP_DIR, 'model.json')
+
+TEST_DAT = join(TEMP_DIR, 'test.dat')
+TEST_KEY = join(TEMP_DIR, 'test.key')

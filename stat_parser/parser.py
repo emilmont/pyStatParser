@@ -1,3 +1,7 @@
+"""
+CKY algorithm from the "Natural Language Processing" course by Michael Collins
+https://class.coursera.org/nlangp-001/class
+"""
 from collections import defaultdict
 from stat_parser.learn import build_model
 
@@ -18,17 +22,18 @@ def backtrace(back, bp):
         return [X, Y]
 
 
-def CKY(pcfg, sentence):
-    x, n = [""] + sentence, len(sentence)
+def CKY(pcfg, norm_words):
+    x, n = [("", "")] + norm_words, len(norm_words)
     
     # Charts
     pi = defaultdict(float)
-    bp = {}
+    bp = defaultdict(tuple)
     for i in range(1, n+1):
         for X in pcfg.N:
-            if (X, x[i]) in pcfg.q1:
-                pi[i, i, X] = pcfg.q1[X, x[i]]
-                bp[i, i, X] = (X, x[i], i, i)
+            norm, word = x[i]
+            if (X, norm) in pcfg.q1:
+                pi[i, i, X] = pcfg.q1[X, norm]
+                bp[i, i, X] = (X, word, i, i)
     
     # Dynamic program
     for l in range(1, n):
@@ -49,7 +54,8 @@ def CKY(pcfg, sentence):
                 if score > 0.0:
                     bp[i, j, X], pi[i, j, X] = back, score
     
-    return backtrace(bp[1, n, "SBARQ"], bp)
+    _, top = max([(pi[1, n, X], bp[1, n, X]) for X in pcfg.N])
+    return backtrace(top, bp)
 
 
 class Parser:
@@ -61,5 +67,7 @@ class Parser:
     
     def parse(self, sentence):
         # TODO: Write a proper tokenizer
-        s = map(self.pcfg.norm_word, sentence.strip().split())
-        return CKY(self.pcfg, s)
+        norm_words = []
+        for word in sentence.strip().split():
+            norm_words.append((self.pcfg.norm_word(word), word))
+        return CKY(self.pcfg, norm_words)

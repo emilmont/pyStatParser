@@ -112,3 +112,11 @@ def gen_norm(norm_path, input_treebanks):
                 except Exception, e:
                     print e
                     print 'Discarding: %s' % str(tree)
+
+
+def get_words(tree):
+    # Assume well formed
+    if len(tree) == 2:
+        return [tree[1]]
+    else:
+        return get_words(tree[1]) + get_words(tree[2])
