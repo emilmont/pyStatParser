@@ -3,7 +3,9 @@ CKY algorithm from the "Natural Language Processing" course by Michael Collins
 https://class.coursera.org/nlangp-001/class
 """
 from collections import defaultdict
+
 from stat_parser.learn import build_model
+from stat_parser.tokenizer import PennTreebankTokenizer
 
 
 def argmax(lst):
@@ -64,10 +66,10 @@ class Parser:
             pcfg = build_model()
         
         self.pcfg = pcfg
+        self.tokenizer = PennTreebankTokenizer()
     
     def parse(self, sentence):
-        # TODO: Write a proper tokenizer
         norm_words = []
-        for word in sentence.strip().split():
+        for word in self.tokenizer.tokenize(sentence):
             norm_words.append((self.pcfg.norm_word(word), word))
         return CKY(self.pcfg, norm_words)
