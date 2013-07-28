@@ -14,11 +14,11 @@ if __name__ == '__main__':
     for key, dat in zip(open(TEST_KEY), open(TEST_DAT)):
         tree = None
         try:
-            tree = parser.raw_parse(dat)
+            tree = parser.norm_parse(dat)
             evaluator.check_trees(loads(key), tree)
         except Exception, e:
             print '\nparsed: {%s}' % (tree)
             print 'key   : {%s}' % (key.strip())
             print e
     evaluator.output()
-    print '\n\nCompleted in (%.2f)sec\n' % (time() - start)
+    print '\nCompleted in (%.2f)sec' % (time() - start)

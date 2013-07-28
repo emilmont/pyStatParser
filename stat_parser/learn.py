@@ -46,7 +46,6 @@ def build_model():
                         if n > 7 and n < 20:
                             dat.write(sentence+'\n')
                             key.write(tree)
-                            continue
                         else:
                             i -= 1
                     

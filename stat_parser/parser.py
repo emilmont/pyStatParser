@@ -3,6 +3,7 @@ CKY algorithm from the "Natural Language Processing" course by Michael Collins
 https://class.coursera.org/nlangp-001/class
 """
 from collections import defaultdict
+from pprint import pprint
 
 try:
     from nltk import Tree
@@ -10,10 +11,10 @@ try:
     def nltk_tree(t):
         return Tree(t[0], [c if isinstance(c, basestring) else nltk_tree(c) for c in t[1:]])
     
-    nltk_installed = True
+    nltk_is_available = True
 
 except ImportError:
-    nltk_installed = False
+    nltk_is_available = False
 
 from stat_parser.learn import build_model
 from stat_parser.tokenizer import PennTreebankTokenizer
@@ -80,12 +81,12 @@ class Parser:
         self.pcfg = pcfg
         self.tokenizer = PennTreebankTokenizer()
         
-        if nltk_installed:
-            self.parse = self.__nltk_parse
+        if nltk_is_available:
+            self.parse = self.nltk_parse
         else:
-            self.parse = self.__parse
+            self.parse = self.raw_parse
     
-    def raw_parse(self, sentence):
+    def norm_parse(self, sentence):
         norm_words = []
         for word in self.tokenizer.tokenize(sentence):
             if isinstance(word, tuple):
@@ -96,11 +97,17 @@ class Parser:
                 norm_words.append((self.pcfg.norm_word(word), word))
         return CKY(self.pcfg, norm_words)
     
-    def __parse(self, sentence):
-        tree = self.raw_parse(sentence)
+    def raw_parse(self, sentence):
+        tree = self.norm_parse(sentence)
         un_chomsky_normal_form(tree)
         return tree
     
-    def __nltk_parse(self, sentence):
-        tree = nltk_tree(self.__parse(sentence))
-        return tree
+    def nltk_parse(self, sentence):
+        return nltk_tree(self.raw_parse(sentence))
+
+
+def display_tree(tree):
+    if nltk_is_available:
+        tree.draw()
+    else:
+        pprint(tree)
