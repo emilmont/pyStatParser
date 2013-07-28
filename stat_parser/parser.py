@@ -71,5 +71,10 @@ class Parser:
     def parse(self, sentence):
         norm_words = []
         for word in self.tokenizer.tokenize(sentence):
-            norm_words.append((self.pcfg.norm_word(word), word))
+            if isinstance(word, tuple):
+                # This is already a word normalized to the Treebank conventions
+                norm_words.append(word)
+            else:
+                # _RARE_ normalization
+                norm_words.append((self.pcfg.norm_word(word), word))
         return CKY(self.pcfg, norm_words)

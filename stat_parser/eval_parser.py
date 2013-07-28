@@ -126,6 +126,9 @@ class FScore:
         print "%10s        %4d     %0.3f        %0.3f        %0.3f"%(
             name, self.gold, self.precision(), self.recall(), self.fscore())
 
+ALIAS = {
+    '"': ("''", '``'),
+}
 
 class ParseEvaluator:
     def __init__(self):
@@ -143,6 +146,9 @@ class ParseEvaluator:
         
         for gold_word, test_word in zip(f1, f2):
             if gold_word != test_word:
+                if gold_word in ALIAS:
+                    if test_word in ALIAS[gold_word]: continue
+                
                 raise ParseError("Tree words do not match. Gold sentence '%s', test sentence '%s'."%(" ".join(f1), " ".join(f2)))
         set1, set2 = gold.to_spans(), test.to_spans()
         

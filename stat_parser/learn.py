@@ -3,10 +3,12 @@ from glob import glob
 from os import makedirs
 from json import loads
 
-from stat_parser.treebanks.normalize import gen_norm, get_words
+from stat_parser.treebanks.parse import normalize_questionbank
+from stat_parser.treebanks.normalize import gen_norm
+from stat_parser.treebanks.extract import get_sentence
 from stat_parser.pcfg import PCFG
 
-from stat_parser.paths import QUESTIONBANK_NORM, QUESTIONBANK_DATA
+from stat_parser.paths import QUESTIONBANK_NORM, QUESTIONBANK_DATA, QUESTIONBANK_PENN_DATA
 from stat_parser.paths import PENNTREEBANK_NORM, PENNTREEBANK_GLOB
 from stat_parser.paths import TEMP_DIR, MODEL_TREEBANK, MODEL
 from stat_parser.paths import TEST_DAT, TEST_KEY
@@ -24,7 +26,8 @@ def build_model():
         
         # Normalise the treebanks
         if not exists(QUESTIONBANK_NORM):
-            gen_norm(QUESTIONBANK_NORM, [QUESTIONBANK_DATA])
+            normalize_questionbank(QUESTIONBANK_DATA, QUESTIONBANK_PENN_DATA)
+            gen_norm(QUESTIONBANK_NORM, [QUESTIONBANK_PENN_DATA])
         
         if not exists(PENNTREEBANK_NORM):
             gen_norm(PENNTREEBANK_NORM, glob(PENNTREEBANK_GLOB))
@@ -35,11 +38,16 @@ def build_model():
             for treebank in [QUESTIONBANK_NORM, PENNTREEBANK_NORM]:
                 for tree in open(treebank):
                     i += 1
-                    if (i % 730) == 0:
-                        dat.write(' '.join(get_words(loads(tree)))+'\n')
-                        key.write(tree)
-                    else:
-                        model.write(tree)
+                    if (i % 100) == 0:
+                        sentence, n = get_sentence(loads(tree))
+                        if n > 7 and n < 20:
+                            dat.write(sentence+'\n')
+                            key.write(tree)
+                            continue
+                        else:
+                            i -= 1
+                    
+                    model.write(tree)
         
         # Learn PCFG
         pcfg.learn_from_treebanks([MODEL_TREEBANK])

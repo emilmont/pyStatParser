@@ -6,6 +6,12 @@
 import re
 
 
+WORD_MAP = {
+    '(': '-LRB-',
+    ')': '-RRB-',
+}
+
+
 class PennTreebankTokenizer:
     """
     The PennTreebankTokenizer uses regular expressions to tokenize text as in
@@ -82,4 +88,42 @@ class PennTreebankTokenizer:
         # they are also commented out in the SED scripts
         # for regexp in self.CONTRACTIONS4:
         #     text = regexp.sub(r' \1 \2 \3 ', text)
-        return text.split()
+        
+        words = []
+        tokens = text.split()
+        skip = False
+        start_quotes = False
+        for i, t in enumerate(tokens):
+            if skip:
+                skip = False
+            
+            elif t == '.' and words[-1] in ('U.S.A', 'Co'):
+                words[-1] += t
+            
+            elif t == '&' and words[-1] == 'S' and tokens[i+1] == 'P':
+                words[-1] += '&P'
+                skip = True
+            
+            elif t == '#':
+                words.append('#' + tokens[i+1])
+                skip = True
+            
+            elif t == "'s" and words[-1].isdigit():
+                words[-1] += t
+            
+            elif t in WORD_MAP:
+                words.append((WORD_MAP[t], t))
+            
+            elif t == '"':
+                if start_quotes:
+                    start_quotes = False
+                    words.append(("''", t))
+                
+                else:
+                    start_quotes = True
+                    words.append(('``', t))
+            
+            else:
+                words.append(t)
+        
+        return words

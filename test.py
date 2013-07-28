@@ -7,9 +7,10 @@ from stat_parser.eval_parser import ParseEvaluator
 
 
 if __name__ == '__main__':
-    start = time()
     parser = Parser()
     evaluator = ParseEvaluator()
+    
+    start = time()
     for key, dat in zip(open(TEST_KEY), open(TEST_DAT)):
         tree = None
         try:
@@ -17,9 +18,7 @@ if __name__ == '__main__':
             evaluator.check_trees(loads(key), tree)
         except Exception, e:
             print '\nparsed: {%s}' % (tree)
-            print 'key   : {%s}' % (key)
+            print 'key   : {%s}' % (key.strip())
             print e
-    
     evaluator.output()
-    
-    print '\nCompleted in (%d)sec' % (time() - start)
+    print '\n\nCompleted in (%.2f)sec\n' % (time() - start)
