@@ -53,11 +53,17 @@ def un_chomsky_normal_form(tree):
             tree[1] = [sym[i+1:], tree[1]]
             un_chomsky_normal_form(tree)
     else:
-        if sym == tree[2][0]:
-            # Undo (3)
-            tree[2:] = tree[2][1:]
-        for t in tree[1:]:
-            un_chomsky_normal_form(t)
+        transformed = False
+        for i in range(2, len(tree)):
+            if sym == tree[i][0]:
+                # Undo (3)
+                tree[i:] = tree[i][1:]
+                transformed = True
+        if transformed:
+            un_chomsky_normal_form(tree)
+        else:
+            for t in tree[1:]:
+                un_chomsky_normal_form(t)
 
 
 def null_elements_filter(node):
