@@ -6,7 +6,7 @@
 import re
 
 
-WORD_MAP = {
+SYM_MAP = {
     '(': '-LRB-',
     ')': '-RRB-',
 }
@@ -97,28 +97,23 @@ class PennTreebankTokenizer:
             if skip:
                 skip = False
             
-            elif t == '.' and words[-1] in ('U.S.A', 'Co'):
-                words[-1] += t
-            
-            elif t == '&' and words[-1] == 'S' and tokens[i+1] == 'P':
-                words[-1] += '&P'
+            # Tokenization Exceptions
+            elif t == '&' and len(tokens[i+1]) == 1:
+                words[-1] += '&' + tokens[i+1]
                 skip = True
-            
             elif t == '#':
                 words.append('#' + tokens[i+1])
                 skip = True
-            
             elif t == "'s" and words[-1].isdigit():
                 words[-1] += t
             
-            elif t in WORD_MAP:
-                words.append((WORD_MAP[t], t))
-            
+            # Special Penn symbols: keep track of original in tuple
+            elif t in SYM_MAP:
+                words.append((SYM_MAP[t], t))
             elif t == '"':
                 if start_quotes:
                     start_quotes = False
                     words.append(("''", t))
-                
                 else:
                     start_quotes = True
                     words.append(('``', t))

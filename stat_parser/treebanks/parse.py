@@ -1,5 +1,5 @@
 # http://bulba.sdsu.edu/jeanette/thesis/PennTags.html
-TAGS = (
+TAGS = set((
     'S',      # simple declarative clause, i.e. one that is not introduced by a (possible empty) subordinating conjunction or a wh-word and that does not exhibit subject-verb inversion.
     'SBAR',   # Clause introduced by a (possibly empty) subordinating conjunction.
     'SBARQ',  # Direct question introduced by a wh-word or a wh-phrase. Indirect questions and relative clauses should be bracketed as SBAR, not SBARQ.
@@ -78,17 +78,19 @@ TAGS = (
     '',       # Empty
     '-NONE-', # 
     'X'       # Uncertain
-)
+))
 
 
 def normalize_tag(tag):
     for sep in ('-', '=', '|'):
         i = tag.find(sep)
         if i > 0:
-            # Do not loose track of -NONE- nodes
-            if not tag[i:].startswith('-NONE-'):
-                return tag[:i]
+            return tag[:i]
     return tag
+
+
+def normalize_word(word):
+    return word.replace("\\/", '/')
 
 
 TAG, SEPARATOR, WORD = 1, 2, 3
@@ -109,6 +111,7 @@ def parse_node(f, node, text):
                     raise Exception("Unrecognized tag: {%s}" % tag)
                 node.append(tag)
             elif c == '(':
+                # Handle starting ((
                 state = SEPARATOR
                 node.append('')
                 branch = []
@@ -132,7 +135,7 @@ def parse_node(f, node, text):
         
         elif state == WORD:
             if c == ')':
-                node.append(''.join(word))
+                node.append(normalize_word(''.join(word)))
                 break
             else:
                 word.append(c)
