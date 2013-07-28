@@ -19,6 +19,7 @@ except ImportError:
 from stat_parser.learn import build_model
 from stat_parser.tokenizer import PennTreebankTokenizer
 from stat_parser.treebanks.normalize import un_chomsky_normal_form
+from stat_parser.word_classes import is_cap_word
 
 
 def argmax(lst):
@@ -87,13 +88,17 @@ class Parser:
             self.parse = self.raw_parse
     
     def norm_parse(self, sentence):
+        words = self.tokenizer.tokenize(sentence)
+        if is_cap_word(words[0]):
+            words[0] = words[0].lower()
+        
         norm_words = []
-        for word in self.tokenizer.tokenize(sentence):
+        for word in words:
             if isinstance(word, tuple):
                 # This is already a word normalized to the Treebank conventions
                 norm_words.append(word)
             else:
-                # _RARE_ normalization
+                # rare words normalization
                 norm_words.append((self.pcfg.norm_word(word), word))
         return CKY(self.pcfg, norm_words)
     

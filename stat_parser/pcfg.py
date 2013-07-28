@@ -2,6 +2,8 @@ from __future__ import division
 from collections import Counter, defaultdict
 from json import loads, dumps
 
+from stat_parser.word_classes import word_class
+
 
 class PCFG:
     RARE_WORD_COUNT = 5
@@ -12,7 +14,7 @@ class PCFG:
         self.well_known_words = set()
     
     def norm_word(self, word):
-        return word if word in self.well_known_words else '_RARE_'
+        return word if word in self.well_known_words else word_class(word)
     
     def __build_caches(self):
         self.N = set()

@@ -1,6 +1,7 @@
 from json import dumps
 
 from stat_parser.treebanks.parse import parse_treebank
+from stat_parser.word_classes import is_cap_word
 
 
 def chomsky_normal_form(tree):
@@ -104,6 +105,14 @@ def prune_null_elements(tree, parents):
                 prune_null_elements(node, parents)
 
 
+def lower_first_word(tree):
+    if len(tree) == 2:
+        if is_cap_word(tree[1]):
+            tree[1] = tree[1].lower()
+    else:
+        lower_first_word(tree[1])
+
+
 def gen_norm(norm_path, input_treebanks):
     with open(norm_path, 'w') as norm:
         for path in input_treebanks:
@@ -111,6 +120,7 @@ def gen_norm(norm_path, input_treebanks):
                 try:
                     prune_null_elements(tree, {})
                     chomsky_normal_form(tree)
+                    lower_first_word(tree)
                     norm.write(dumps(tree) + '\n')
                 except UncertainParsing, e:
                     pass
