@@ -14,7 +14,7 @@ if __name__ == '__main__':
     for key, dat in zip(open(TEST_KEY), open(TEST_DAT)):
         tree = None
         try:
-            tree = parser.parse(dat)
+            tree = parser.raw_parse(dat)
             evaluator.check_trees(loads(key), tree)
         except Exception, e:
             print '\nparsed: {%s}' % (tree)

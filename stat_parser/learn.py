@@ -2,6 +2,7 @@ from os.path import exists
 from glob import glob
 from os import makedirs
 from json import loads
+from time import time
 
 from stat_parser.treebanks.parse import normalize_questionbank
 from stat_parser.treebanks.normalize import gen_norm
@@ -20,7 +21,9 @@ def build_model():
         pcfg.load_model(MODEL)
     
     else:
-        print "Building the grammar model for the first time..."
+        print "Building the Grammar Model"
+        start = time()
+        
         if not exists(TEMP_DIR):
             makedirs(TEMP_DIR)
         
@@ -52,7 +55,6 @@ def build_model():
         # Learn PCFG
         pcfg.learn_from_treebanks([MODEL_TREEBANK])
         pcfg.save_model(MODEL)
+        print "Time: (%.2f)s\n" % (time() - start)
     
     return pcfg
-
-

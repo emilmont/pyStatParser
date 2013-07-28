@@ -142,7 +142,6 @@ def parse_node(f, node, text):
 
 
 def parse_treebank(file_path):
-    print 'parsing: %s' % file_path
     f = open(file_path)
     text = None
     while True:

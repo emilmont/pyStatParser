@@ -43,6 +43,23 @@ def chomsky_normal_form(tree):
         chomsky_normal_form(tree)
 
 
+def un_chomsky_normal_form(tree):
+    sym = tree[0]
+    if len(tree) == 2:
+        i = sym.find('+')
+        if i != -1:
+            # Undo (1)
+            tree[0] = sym[:i]
+            tree[1] = [sym[i+1:], tree[1]]
+            un_chomsky_normal_form(tree)
+    else:
+        if sym == tree[2][0]:
+            # Undo (3)
+            tree[2:] = tree[2][1:]
+        for t in tree[1:]:
+            un_chomsky_normal_form(t)
+
+
 def null_elements_filter(node):
     if isinstance(node, list):
         n = len(node)
