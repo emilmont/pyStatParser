@@ -58,7 +58,7 @@ def un_chomsky_normal_form(tree):
         for i in range(2, len(tree)):
             if sym == tree[i][0]:
                 # Undo (3)
-                tree[i:] = tree[i][1:]
+                tree[i:i+1] = tree[i][1:]
                 transformed = True
         if transformed:
             un_chomsky_normal_form(tree)
