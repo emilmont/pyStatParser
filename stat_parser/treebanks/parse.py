@@ -1,3 +1,4 @@
+from __future__ import print_function
 # http://bulba.sdsu.edu/jeanette/thesis/PennTags.html
 TAGS = set((
     'S',      # simple declarative clause, i.e. one that is not introduced by a (possible empty) subordinating conjunction or a wh-word and that does not exhibit subject-verb inversion.
@@ -157,9 +158,9 @@ def parse_treebank(file_path):
                     # Remove initial empty node from penn treebank
                     tree = tree[1]
                 yield tree
-        except Exception, e:
-            print ''.join(text)
-            print e
+        except Exception as e:
+            print(''.join(text))
+            print(e)
             import sys
             sys.exit()
 

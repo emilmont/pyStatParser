@@ -1,3 +1,6 @@
+from __future__ import print_function
+from future.builtins import zip
+from future.builtins import range
 from json import loads
 from time import time
 from multiprocessing import Process, JoinableQueue, cpu_count
@@ -30,10 +33,10 @@ class Evaluator(Thread):
             key, tree = self.parsed.get()
             try:
                 self.results.check_trees(loads(key), tree)
-            except Exception, e:
-                print '\nparsed: {%s}' % (tree)
-                print 'key   : {%s}' % (key.strip())
-                print e
+            except Exception as e:
+                print('\nparsed: {%s}' % (tree))
+                print('key   : {%s}' % (key.strip()))
+                print(e)
             self.parsed.task_done()
 
 
@@ -58,7 +61,7 @@ def test():
     sentences.join()
     parsed.join()
     evaluator.results.output()
-    print '\nCompleted in (%.2f)sec' % (time() - start)
+    print('\nCompleted in (%.2f)sec' % (time() - start))
 
 
 if __name__ == '__main__':

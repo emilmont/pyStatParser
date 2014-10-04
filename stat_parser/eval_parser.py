@@ -3,6 +3,9 @@ Parses evaluator from the "Natural Language Processing" course by Michael Collin
 https://class.coursera.org/nlangp-001/class
 """
 from __future__ import division
+from __future__ import print_function
+from future.builtins import zip
+from future.builtins import object
 
 import re
 from collections import defaultdict
@@ -16,7 +19,7 @@ class ParseError(Exception):
         return self.value
 
 
-class TreeOperations:
+class TreeOperations(object):
     "Some basic operations on trees."
     def __init__(self, tree):
         self.tree = tree
@@ -68,17 +71,17 @@ class TreeOperations:
         if len(node) not in [2, 3]:
             raise ParseError("Ill-formed tree:  %d-ary rule, only binary or unary allowed %s"%(len(node), node))
         
-        if not isinstance(node[0], basestring):
+        if not isinstance(node[0], str):
             raise ParseError("Ill-formed tree: non-terminal not a string %s."%(node[0]))
         
         if len(node) == 2:
-            if not isinstance(node[1], basestring):
+            if not isinstance(node[1], str):
                 raise ParseError("Ill-formed tree: unary rule does not produce a string %s."%(node[1]))
         
         elif len(node) == 3:
-            if isinstance(node[1], basestring):
+            if isinstance(node[1], str):
                 raise ParseError("Ill-formed tree: binary rule produces a string %s."%(node[1]))
-            if isinstance(node[2], basestring):
+            if isinstance(node[2], str):
                 raise ParseError("Ill-formed tree: binary rule produces a string %s."%(node[2]))
             self._well_formed(node[1])
             self._well_formed(node[2])
@@ -87,7 +90,7 @@ class TreeOperations:
         self._well_formed(self.tree)
 
 
-class FScore:
+class FScore(object):
     "Compute F1-Score based on gold set and test set."
     
     def __init__(self):
@@ -117,14 +120,14 @@ class FScore:
     @staticmethod
     def output_header():
         "Output a scoring header."
-        print "%10s  %10s  %10s  %10s   %10s"%(
-          "Type", "Total", "Precision", "Recall", "F1-Score")
-        print "==============================================================="
+        print("%10s  %10s  %10s  %10s   %10s"%(
+          "Type", "Total", "Precision", "Recall", "F1-Score"))
+        print("===============================================================")
     
     def output_row(self, name):
         "Output a scoring row."
-        print "%10s        %4d     %0.3f        %0.3f        %0.3f"%(
-            name, self.gold, self.precision(), self.recall(), self.fscore())
+        print("%10s        %4d     %0.3f        %0.3f        %0.3f"%(
+            name, self.gold, self.precision(), self.recall(), self.fscore()))
 
 ALIAS = {
     '``': '"',
@@ -133,7 +136,7 @@ ALIAS = {
     '-RRB-': ')',
 }
 
-class ParseEvaluator:
+class ParseEvaluator(object):
     def __init__(self):
         self.total_score = FScore()
         self.nt_score = defaultdict(FScore)
@@ -167,9 +170,9 @@ class ParseEvaluator:
     def output(self):
         "Print out the f-score table."
         FScore.output_header()
-        nts = self.nt_score.keys()
+        nts = list(self.nt_score.keys())
         nts.sort()
         for nt in nts:
             self.nt_score[nt].output_row(nt)
-        print
+        print()
         self.total_score.output_row("total")
