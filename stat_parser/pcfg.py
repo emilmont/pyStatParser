@@ -1,5 +1,4 @@
 from __future__ import division
-from future.builtins import object
 from collections import Counter, defaultdict
 from json import loads, dumps
 

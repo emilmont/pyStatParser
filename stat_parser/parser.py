@@ -2,10 +2,9 @@
 CKY algorithm from the "Natural Language Processing" course by Michael Collins
 https://class.coursera.org/nlangp-001/class
 """
-from future.builtins import range
-from future.builtins import object
 from collections import defaultdict
 from pprint import pprint
+from six.moves import range
 
 try:
     from nltk import Tree

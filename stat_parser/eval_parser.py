@@ -4,11 +4,10 @@ https://class.coursera.org/nlangp-001/class
 """
 from __future__ import division
 from __future__ import print_function
-from future.builtins import zip
-from future.builtins import object
 
 import re
 from collections import defaultdict
+from six.moves import zip
 
 
 class ParseError(Exception):

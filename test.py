@@ -1,10 +1,9 @@
 from __future__ import print_function
-from future.builtins import zip
-from future.builtins import range
 from json import loads
 from time import time
 from multiprocessing import Process, JoinableQueue, cpu_count
 from threading import Thread
+from six.moves import range, zip
 
 from stat_parser.paths import TEST_DAT, TEST_KEY
 from stat_parser.parser import Parser

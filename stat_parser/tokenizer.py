@@ -1,4 +1,3 @@
-from future.builtins import object
 # Natural Language Toolkit: Tokenizers
 #
 # Copyright (C) 2001-2013 NLTK Project
