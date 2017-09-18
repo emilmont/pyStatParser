@@ -1,3 +1,4 @@
+from __future__ import print_function
 from os.path import exists
 from glob import glob
 from os import makedirs
@@ -21,7 +22,7 @@ def build_model():
         pcfg.load_model(MODEL)
     
     else:
-        print "Building the Grammar Model"
+        print("Building the Grammar Model")
         start = time()
         
         if not exists(TEMP_DIR):
@@ -54,6 +55,6 @@ def build_model():
         # Learn PCFG
         pcfg.learn_from_treebanks([MODEL_TREEBANK])
         pcfg.save_model(MODEL)
-        print "Time: (%.2f)s\n" % (time() - start)
+        print("Time: (%.2f)s\n" % (time() - start))
     
     return pcfg

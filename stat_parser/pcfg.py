@@ -5,7 +5,7 @@ from json import loads, dumps
 from stat_parser.word_classes import word_class
 
 
-class PCFG:
+class PCFG(object):
     RARE_WORD_COUNT = 5
     
     def __init__(self):
@@ -20,10 +20,10 @@ class PCFG:
         self.N = set()
         self.binary_rules = defaultdict(list)
         
-        for x, _ in self.q1.keys():
+        for x, _ in list(self.q1.keys()):
             self.N.add(x)
         
-        for x, y1, y2 in self.q2.keys():
+        for x, y1, y2 in list(self.q2.keys()):
             self.N.update(set([x, y1, y2]))
             self.binary_rules[x].append((y1, y2))
     
@@ -38,28 +38,28 @@ class PCFG:
                 self.__count(loads(s))
         
         # Words
-        for word, count in self.words_count.iteritems():
+        for word, count in self.words_count.items():
             if count >= PCFG.RARE_WORD_COUNT:
                 self.well_known_words.add(word)
         
         # Normalise the unary rules count
         norm = Counter()
-        for (x, word), count in self.unary_count.iteritems():
+        for (x, word), count in self.unary_count.items():
             norm[(x, self.norm_word(word))] += count
         self.unary_count = norm
         
         # Q1
-        for (x, word), count in self.unary_count.iteritems():
+        for (x, word), count in self.unary_count.items():
             self.q1[x, word] = self.unary_count[x, word] / self.sym_count[x]
         
         # Q2
-        for (x, y1, y2), count in self.binary_count.iteritems():
+        for (x, y1, y2), count in self.binary_count.items():
             self.q2[x, y1, y2] = self.binary_count[x, y1, y2] / self.sym_count[x]
         
         self.__build_caches()
     
     def __count(self, tree):
-        if isinstance(tree, basestring): return
+        if isinstance(tree, str): return
         
         # Count the non-terminal symbols
         sym = tree[0]
@@ -82,10 +82,10 @@ class PCFG:
     
     def save_model(self, path):
         with open(path, 'w') as model:
-            for (x, word), p in self.q1.iteritems():
+            for (x, word), p in self.q1.items():
                 model.write(dumps(['Q1', x, word, p]) + '\n')
             
-            for (x, y1, y2), p in self.q2.iteritems():
+            for (x, y1, y2), p in self.q2.items():
                 model.write(dumps(['Q2', x, y1, y2, p]) + '\n')
             
             model.write(dumps(['WORDS', list(self.well_known_words)]) + '\n')

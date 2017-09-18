@@ -16,7 +16,7 @@ PATTERNS = {
 
 
 def word_class(word):
-    for tag, p in PATTERNS.iteritems():
+    for tag, p in PATTERNS.items():
         if p.match(word) is not None:
             return tag
     

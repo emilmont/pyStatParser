@@ -12,7 +12,7 @@ SYM_MAP = {
 }
 
 
-class PennTreebankTokenizer:
+class PennTreebankTokenizer(object):
     """
     The PennTreebankTokenizer uses regular expressions to tokenize text as in
     Penn Treebank. This implementation is a port of the tokenizer sed script

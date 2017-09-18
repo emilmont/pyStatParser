@@ -1,4 +1,8 @@
+from __future__ import print_function
 from json import dumps
+from six.moves import filter, range
+from six import text_type as str
+string_types = str
 
 from stat_parser.treebanks.parse import parse_treebank
 from stat_parser.word_classes import is_cap_word
@@ -12,7 +16,7 @@ def chomsky_normal_form(tree):
     if n < 2:
         raise Exception("Rule should have at least two items: %s" % str(tree))
     
-    if not isinstance(tree[0], basestring):
+    if not isinstance(tree[0], string_types):
         raise Exception("Root should be a string: %s" % str(tree))
     
     if n == 2:
@@ -23,13 +27,13 @@ def chomsky_normal_form(tree):
             tree[1:] = tree[1][1:]
             chomsky_normal_form(tree)
         else:
-            if not isinstance(tree[1], basestring):
+            if not isinstance(tree[1], string_types):
                 raise Exception("Terminal should be a string: %s" % str(tree))
     
     elif n == 3:
         # X -> Y1, Y2
         for i in (1, 2):
-            if isinstance(tree[i], basestring):
+            if isinstance(tree[i], string_types):
                 # (2) Normalise rule that mixes terminal with non-terminal
                 tree[i] = [tree[i].upper(), tree[i]]
             else:
@@ -84,7 +88,7 @@ class UncertainParsing(Exception):
 
 
 def prune_null_elements(tree, parents):
-    tree[:] = filter(null_elements_filter, tree)
+    tree[:] = list(filter(null_elements_filter, tree))
     
     n = len(tree)
     if n < 2:
@@ -93,7 +97,8 @@ def prune_null_elements(tree, parents):
     else:
         root = tree[0]
         
-        if not isinstance(tree[0], basestring):
+        if not isinstance(tree[0], string_types):
+            import ipdb; ipdb.set_trace()
             raise Exception("Root should be a string: %s" % str(tree))
         
         if root == 'X':
@@ -122,8 +127,8 @@ def gen_norm(norm_path, input_treebanks):
                     chomsky_normal_form(tree)
                     lower_first_word(tree)
                     norm.write(dumps(tree) + '\n')
-                except UncertainParsing, e:
+                except UncertainParsing as e:
                     pass
-                except Exception, e:
-                    print e
-                    print 'Discarding: %s' % str(tree)
+                except Exception as e:
+                    print(e)
+                    print('Discarding: %s' % str(tree))

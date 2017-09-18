@@ -4,12 +4,13 @@ https://class.coursera.org/nlangp-001/class
 """
 from collections import defaultdict
 from pprint import pprint
+from six.moves import range
 
 try:
     from nltk import Tree
     
     def nltk_tree(t):
-        return Tree(t[0], [c if isinstance(c, basestring) else nltk_tree(c) for c in t[1:]])
+        return Tree(t[0], [c if isinstance(c, str) else nltk_tree(c) for c in t[1:]])
     
     nltk_is_available = True
 
@@ -74,7 +75,7 @@ def CKY(pcfg, norm_words):
     return backtrace(top, bp)
 
 
-class Parser:
+class Parser(object):
     def __init__(self, pcfg=None):
         if pcfg is None:
             pcfg = build_model()

@@ -1,7 +1,9 @@
+from __future__ import print_function
 from json import loads
 from time import time
 from multiprocessing import Process, JoinableQueue, cpu_count
 from threading import Thread
+from six.moves import range, zip
 
 from stat_parser.paths import TEST_DAT, TEST_KEY
 from stat_parser.parser import Parser
@@ -30,10 +32,10 @@ class Evaluator(Thread):
             key, tree = self.parsed.get()
             try:
                 self.results.check_trees(loads(key), tree)
-            except Exception, e:
-                print '\nparsed: {%s}' % (tree)
-                print 'key   : {%s}' % (key.strip())
-                print e
+            except Exception as e:
+                print('\nparsed: {%s}' % (tree))
+                print('key   : {%s}' % (key.strip()))
+                print(e)
             self.parsed.task_done()
 
 
@@ -58,7 +60,7 @@ def test():
     sentences.join()
     parsed.join()
     evaluator.results.output()
-    print '\nCompleted in (%.2f)sec' % (time() - start)
+    print('\nCompleted in (%.2f)sec' % (time() - start))
 
 
 if __name__ == '__main__':
